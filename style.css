@@ -1,0 +1,78 @@
+body {
+    background-color: #ffffff;
+    color: #1a1a1a;
+ 
+    font-family: 'Poppins', sans-serif;
+  
+    margin: 0;
+    padding: 40px 20px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .profile {
+    text-align: center;
+  }
+  
+  .profile img {
+    border-radius: 15%;
+  }
+  
+  .profile h3, .profile h4 {
+    color: #555555;
+    font-weight: normal;
+    margin: 4px 0;
+  }
+  
+  #tanggal {
+    color: #888888;
+    font-size: 14px;
+  }
+  
+  .social {
+    text-align: center;
+    margin: 20px 0;
+  }
+  
+  .social a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #0090FF;
+    font-weight: bold;
+  }
+  
+  .social a:hover {
+    text-decoration: underline;
+  }
+  
+  hr {
+    border: none;
+    border-top: 1px solid #e0e0e0;
+    margin: 30px 0;
+  }
+  
+  h1, h2 {
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  p {
+    line-height: 1.6;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    border: 1px solid #e0e0e0;
+  }
+  
+  th {
+    background-color: #f4f4f4;
+    color: #1a1a1a;
+    padding: 8px;
+  }
+  
+  td {
+    padding: 8px;
+  }
