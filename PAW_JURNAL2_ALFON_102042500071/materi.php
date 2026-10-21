@@ -38,7 +38,22 @@ if ($aksi === 'daftar') {
     // - kalau $search diisi, tampilkan hanya materi yang judulnya atau nama mata kuliahnya mengandung kata itu
     // - kalau $id_mk bukan 0, tampilkan hanya materi milik mata kuliah itu
     // - $search dan $id_mk bisa dipakai bersamaan
-    $daftar_materi = [];
+    $sql = 'SELECT materi.*, mata_kuliah.kode AS kode_mk, mata_kuliah.nama AS nama_mk
+            FROM materi
+            JOIN mata_kuliah ON mata_kuliah.id = materi.mata_kuliah_id
+            WHERE (materi.judul LIKE ? OR mata_kuliah.nama LIKE ?)';
+    $kata   = '%' . $search . '%';
+    $params = [$kata, $kata];
+
+    if ($id_mk !== 0) {
+        $sql .= ' AND materi.mata_kuliah_id = ?';
+        $params[] = $id_mk;
+    }
+
+    $sql .= ' ORDER BY mata_kuliah.kode, materi.judul';
+    $stmt = $conn->prepare($sql);
+    $stmt->execute($params);
+    $daftar_materi = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
 // ---------- TAMBAH DAN EDIT ----------
@@ -55,7 +70,8 @@ if (($aksi === 'tambah' || $aksi === 'edit') && $_SERVER['REQUEST_METHOD'] === '
         // TODO 3 (CREATE)
         // Simpan isi $materi sebagai baris baru di tabel materi.
         // Ubah $berhasil menjadi true kalau query-nya sukses dijalankan.
-        $berhasil = false;
+        $stmt = $conn->prepare('INSERT INTO materi (mata_kuliah_id, judul, isi, tautan) VALUES (?, ?, ?, ?)');
+        $berhasil = $stmt->execute([$materi['mata_kuliah_id'], $materi['judul'], $materi['isi'], $materi['tautan']]);
 
         if ($berhasil) {
             pindah_halaman('materi.php', 'Materi berhasil ditambahkan.');
@@ -67,7 +83,8 @@ if (($aksi === 'tambah' || $aksi === 'edit') && $_SERVER['REQUEST_METHOD'] === '
         // TODO 4 (UPDATE)
         // Perbarui baris materi dengan id = $id memakai isi $materi yang baru.
         // Ubah $berhasil menjadi true kalau query-nya sukses dijalankan.
-        $berhasil = false;
+        $stmt = $conn->prepare('UPDATE materi SET mata_kuliah_id = ?, judul = ?, isi = ?, tautan = ? WHERE id = ?');
+        $berhasil = $stmt->execute([$materi['mata_kuliah_id'], $materi['judul'], $materi['isi'], $materi['tautan'], $id]);
 
         if ($berhasil) {
             pindah_halaman('materi.php?aksi=detail&id=' . $id, 'Materi berhasil diperbarui.');
@@ -83,7 +100,8 @@ if ($aksi === 'hapus' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     // TODO 5 (DELETE)
     // Hapus baris materi dengan id = $id.
     // Ubah $berhasil menjadi true kalau query-nya sukses dijalankan.
-    $berhasil = false;
+    $stmt = $conn->prepare('DELETE FROM materi WHERE id = ?');
+    $berhasil = $stmt->execute([$id]);
 
     if ($berhasil) {
         pindah_halaman('materi.php', 'Materi berhasil dihapus.');
